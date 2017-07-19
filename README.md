@@ -1,7 +1,7 @@
-# right_move_web_scraper
-Python class to scrape data from the <a href='http://www.rightmove.co.uk/'>rightmove.co.uk</a> property website and save the results in a pandas DataFrame object.
+# rightmove_webscraper
+A Python class to scrape data from the <a href='http://www.rightmove.co.uk/'>rightmove.co.uk</a> property website and save the results in a pandas DataFrame object.
 
-## Class
+## How to use
 
 The class uses the <a href='https://pypi.python.org/pypi/lxml'>lxml</a> and <a href='https://pypi.python.org/pypi/requests/2.11.1'>requests</a> libraries to scrape data from the rightmove website. The necessary steps to use the class are:
 
