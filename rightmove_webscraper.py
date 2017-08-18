@@ -14,15 +14,14 @@ import datetime as dt
 class rightmove_data(object):
 
     def __init__(self, url):
+        
         self.url = url
-
-    def rent_or_sale(self):
-        """Returns a string of either RENT or SALE to denote the type of search performed by the URL."""
+        
         try:
-            if 'searchType=SALE' in self.url:
-                return 'SALE'
-            elif 'searchType=RENT' in self.url:
-                return 'RENT'
+            if "searchType=SALE" in self.url:
+                self.rent_or_sale = "SALE"
+            elif "searchType=RENT" in self.url:
+                self.rent_or_sale = "RENT"
         except ValueError:
             print("Not a valid rightmove search URL.")
 
@@ -53,9 +52,9 @@ class rightmove_data(object):
         # method to scrape data from every page returned by the search.
 
         # Set the correct xpath for the price.
-        if self.rent_or_sale() == 'RENT':
+        if self.rent_or_sale == "RENT":
             xp_prices = '//span[@class="propertyCard-priceValue"]/text()'
-        elif self.rent_or_sale() == 'SALE':
+        elif self.rent_or_sale == "SALE":
             xp_prices = '//div[@class="propertyCard-priceValue"]/text()'
 
         # Set the xpaths for listing title, property address, and listing URL.
@@ -127,6 +126,13 @@ class rightmove_data(object):
         # Extract number of bedrooms from 'type' to a separate column
         full_results['number_bedrooms'] = full_results.type.str.extract(r'\b([\d][\d]?)\b',expand=True)
         full_results.loc[full_results['type'].str.contains('studio',case=False),'number_bedrooms']=0
+        
+        # Clean up annoying white spaces and newlines in "type" column
+        for row in range(len(full_results)):
+            type_string = full_results.loc[row, "type"]
+            cleaned_string = type_string.strip("\n")
+            cleaned_string = cleaned_string.strip()
+            full_results.loc[row, "type"] = cleaned_string
 
         # Add in search_date column to record the date the search was run (i.e. today's date)
         now = dt.datetime.today().strftime("%d/%m/%Y")
