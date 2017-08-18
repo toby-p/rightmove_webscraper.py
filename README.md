@@ -1,9 +1,38 @@
 # rightmove_webscraper
-A Python class to scrape data from the <a href='http://www.rightmove.co.uk/'>rightmove.co.uk</a> property website and save the results in a pandas DataFrame object.
+
+<a href="http://www.rightmove.co.uk/">rightmove.co.uk</a> is one of the UK's largest property listings websites, hosting thousands of  listings of properties for sale and to rent.
+
+The <code>rightmove_webscraper.py</code> class is a simple Python interface to scrape property listings from the website and prepare them in a Pandas dataframe for analysis.
+
+The class uses the <i>lxml</i> and <i>requests</i> libraries to scrape data from the rightmove website. 
 
 ## How to use
 
-The class uses the <a href='https://pypi.python.org/pypi/lxml'>lxml</a> and <a href='https://pypi.python.org/pypi/requests/2.11.1'>requests</a> libraries to scrape data from the rightmove website. The necessary steps to use the class are:
+1) Go to <a href="http://www.rightmove.co.uk/">rightmove.co.uk</a> and search for whatever listings you are interested in ...
 
-1. Go to rightmove.co.uk and perform whatever search you are interested in.
-2. After searching on the website you'll be shown the first page of matching results - copy and paste the full long URL, and create an instance of the class on the URL.
+<img src = "./images/rightmove_search_screen.PNG">
+
+2) Filter the search however you choose ...
+
+<img src = "./images/rightmove_search_screen_2.PNG">
+
+<img src = "./images/rightmove_search_screen_3.PNG">
+
+3) Run the search and copy the URL of the results page ...
+
+<img src = "./images/rightmove_url.PNG">
+
+4) Create an instance of the class on the URL ...
+
+```python
+url = "http://www.rightmove.co.uk/property-for-sale/find.html?locationIdentifier= [...] "
+rightmove_object = rightmove_data(url)
+```
+
+5) Access the data using the methods and attributes of the object ...
+
+<img src = "./images/methods_and_attributes.PNG">
+
+The full results can be created as a Pandas dataframe using the <code>.get_results()</code> method.
+
+<img src = "./images/results_dataframe.PNG">
