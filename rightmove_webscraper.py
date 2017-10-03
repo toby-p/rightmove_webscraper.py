@@ -37,7 +37,7 @@ class rightmove_data(object):
         There are 24 results on each results page, but note that the
         rightmove website limits results pages to a maximum of 42 pages."""
 
-        page_count = self.results_count() / 24
+        page_count = self.results_count() // 24
         if self.results_count() % 24 > 0:
             page_count += 1
 
