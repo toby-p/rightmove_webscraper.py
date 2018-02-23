@@ -20,9 +20,9 @@ class rightmove_data(object):
         self.url = url
         
         try:
-            if "searchType=SALE" in self.url:
+            if "searchType=SALE" in self.url or "property-for-sale" in self.url:
                 self.rent_or_sale = "SALE"
-            elif "searchType=RENT" in self.url:
+            elif "searchType=RENT" in self.url or "property-to-rent" in self.url:
                 self.rent_or_sale = "RENT"
         except ValueError:
             print("Not a valid rightmove search URL.")
