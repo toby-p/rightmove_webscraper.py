@@ -6,6 +6,15 @@ The <code>rightmove_webscraper.py</code> class is a simple Python interface to s
 
 The class uses the <i>lxml</i> and <i>requests</i> libraries to scrape data from the rightmove website. 
 
+## Installation
+
+### NEW!
+The web scraper is now available as a package with all required dependencies on Pip.
+
+Install with:
+
+ <code>pip install -U rightmove-webscraper</code>
+
 ## How to use
 
 1) Go to <a href="http://www.rightmove.co.uk/">rightmove.co.uk</a> and search for whatever listings you are interested in ...
