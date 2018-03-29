@@ -1,14 +1,11 @@
 # rightmove_webscraper
 
-<a href="http://www.rightmove.co.uk/" target="_blank">rightmove.co.uk</a> is one of the UK's largest property listings websites, hosting thousands of  listings of properties for sale and to rent.
+<a href="http://www.rightmove.co.uk/" target="_blank">rightmove.co.uk</a> is one of the UK's largest property listings websites, hosting thousands of listings of properties for sale and to rent.
 
 The <code>rightmove_webscraper.py</code> class is a simple Python interface to scrape property listings from the website and prepare them in a Pandas dataframe for analysis.
 
-The class uses the <i>lxml</i> and <i>requests</i> libraries to scrape data from the rightmove website. 
-
 ## Installation
 
-### NEW!
 The web scraper is now available as a package with all required dependencies on Pip.
 
 Install with:
@@ -34,6 +31,7 @@ Install with:
 4) Create an instance of the class on the URL ...
 
 ```python
+from rightmove_webscraper import rightmove_data
 url = "http://www.rightmove.co.uk/property-for-sale/find.html?locationIdentifier= [...] "
 rightmove_object = rightmove_data(url)
 ```
@@ -42,6 +40,44 @@ rightmove_object = rightmove_data(url)
 
 <img src = "./images/methods_and_attributes.PNG">
 
-The full results can be created as a Pandas dataframe using the <code>.get_results()</code> method.
+Find the average price of all listings returned by the search:
 
+```python
+rightmove_object.average_price
+```
+<img src = "./images/average_price.PNG">
+
+
+Show the total number of listings returned by the search:
+
+```python
+rightmove_object.results_count
+```
+<img src = "./images/number_results.PNG">
+
+
+Access the full results as a Pandas dataframe with the <code>.get_results</code> attribute.
+
+```python
+rightmove_object.get_results
+```
 <img src = "./images/results_dataframe.PNG">
+
+
+### NEW!
+
+Get quick summary statistics of the results. The default shows the number of listings and average pricce grouped by the number of bedrooms:
+
+```python
+rightmove_object.summary()
+```
+<img src = "./images/summary_default.PNG">
+
+You can also group by any other column reurned in the <code>.get_results</code> DataFrame, for example Postcode:
+
+```python
+rightmove_object.summary(by = "postcode")
+```
+<img src = "./images/summary_postode.PNG">
+
+
