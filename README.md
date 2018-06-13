@@ -66,14 +66,14 @@ rightmove_object.get_results
 
 ### NEW!
 
-Get quick summary statistics of the results. The default shows the number of listings and average pricce grouped by the number of bedrooms:
+Get quick summary statistics of the results. The default shows the number of listings and average price grouped by the number of bedrooms:
 
 ```python
 rightmove_object.summary()
 ```
 <img src = "./images/summary_default.PNG">
 
-You can also group by any other column reurned in the <code>.get_results</code> DataFrame, for example Postcode:
+You can also group by any other column returned in the <code>.get_results</code> DataFrame, for example Postcode:
 
 ```python
 rightmove_object.summary(by = "postcode")
