@@ -91,8 +91,9 @@ class _GetDataFromURL(object):
         xp_addresses = """//address[@class="propertyCard-address"]//span/text()"""
         xp_weblinks = """//div[@class="propertyCard-details"]\
         //a[@class="propertyCard-link"]/@href"""
+        
         xp_agent_urls = """//div[@class="propertyCard-contactsItem"]\
-        //div[@class="propertyCard-contacts"]\
+        //div[@class="propertyCard-branchLogo"]\
         //a[@class="propertyCard-branchLogo-link"]/@href"""
         xp_time_on_market = """//span[@class="propertyCard-contactsAddedOrReduced"]/text()"""
 
