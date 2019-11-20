@@ -39,14 +39,14 @@ rm = RightmoveData(url)
 
 5) Access the data using the methods and attributes of the object ...
 
-<img src = "./docs/images/methods_attributes.PNG">
+<img src = "./docs/images/methods_attributes.png">
 
 Get the average price of all listings returned by the search:
 
 ```python
 rm.average_price
 ```
-<img src = "./docs/images/av_price.PNG">
+<img src = "./docs/images/av_price.png">
 
 
 Show the total number of listings returned by the search:
@@ -54,7 +54,7 @@ Show the total number of listings returned by the search:
 ```python
 rm.results_count
 ```
-<img src = "./docs/images/n_results.PNG">
+<img src = "./docs/images/n_results.png">
 
 
 Access the full results as a Pandas dataframe at the <code>.get_results</code> attribute.
@@ -62,21 +62,21 @@ Access the full results as a Pandas dataframe at the <code>.get_results</code> a
 ```python
 rm.get_results
 ```
-<img src = "./docs/images/get_results.PNG">
+<img src = "./docs/images/get_results.png">
 
 Get quick summary statistics of the results, showing the number of listings and average price grouped by the number of bedrooms:
 
 ```python
 rm.summary()
 ```
-<img src = "./docs/images/summary.PNG">
+<img src = "./docs/images/summary.png">
 
 Alternatively group the results by any other column returned in the <code>.get_results</code> DataFrame, for example Postcode:
 
 ```python
 rm.summary(by="postcode")
 ```
-<img src = "./docs/images/summary_by_postode.PNG">
+<img src = "./docs/images/summary_by_postode.png">
 
 ## Legal
 <a href="https://github.com/toddy86">@toddy86</a> has pointed out per the terms and conditions <a href="https://www.rightmove.co.uk/this-site/terms-of-use.html"> here</a> the use of webscrapers is unauthorised by rightmove. So please don't use this package!
