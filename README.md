@@ -76,7 +76,7 @@ Alternatively group the results by any other column returned in the <code>.get_r
 ```python
 rm.summary(by="postcode")
 ```
-<img src = "./docs/images/summary_by_postode.png">
+<img src = "./docs/images/summary_by_postcode.png">
 
 ## Legal
 <a href="https://github.com/toddy86">@toddy86</a> has pointed out per the terms and conditions <a href="https://www.rightmove.co.uk/this-site/terms-of-use.html"> here</a> the use of webscrapers is unauthorised by rightmove. So please don't use this package!
