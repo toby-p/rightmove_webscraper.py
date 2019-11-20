@@ -1,5 +1,5 @@
 .idea
 __pycache__/
 dist/
-*/.ipynb_checkpoints
+.ipynb_checkpoints
 /dev.ipynb
