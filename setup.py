@@ -7,7 +7,7 @@ except ImportError as e:
 
 DIR = os.path.dirname(os.path.abspath(__file__))
 
-with open(os.path.join(DIR, "README.md"), "r") as f:
+with open(os.path.join(DIR, "docs", "README.txt"), "r") as f:
     long_description = f.read()
 with open(os.path.join(DIR, "requirements.txt"), "r") as f:
     REQUIRED = [i for i in f.read().split("\n") if len(i)]
@@ -23,6 +23,7 @@ setup(
     author_email="tobypetty@hotmail.com",
     url="https://github.com/woblers/rightmove_webscraper.py",
     install_requires=REQUIRED,
+    python_requires='>=3.6',
     keywords=["webscraping", "rightmove", "data"],
     license="MIT",
     classifiers=[
