@@ -117,6 +117,10 @@ class RightmoveData:
             return "sale"
         elif "/property-to-rent/" in self.url:
             return "rent"
+         elif "/commercial-property-for-sale/" in self.url:
+            return "sale"
+        elif "/commercial-property-to-rent/" in self.url:
+            return "rent"
         else:
             raise ValueError(f"Invalid rightmove URL:\n\n\t{self.url}")
 
