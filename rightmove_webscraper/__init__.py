@@ -1,13 +1,13 @@
 
 import datetime as dt
-from lxml import html, etree
+from lxml import html
 import numpy as np
 import pandas as pd
 import requests
 
 
 class RightmoveData:
-    """The `RightmoveData` web scraper collects structured data on properties
+    """The `RightmoveData` webscraper collects structured data on properties
     returned by a search performed on www.rightmove.co.uk
 
     An instance of the class provides attributes to access data from the search
@@ -26,10 +26,10 @@ class RightmoveData:
                 floor plan images for each listing (be warned this drastically
                 increases runtime so is False by default).
         """
-        self.__status_code, self.__first_page = self._request(url)
-        self.__url = url
-        self.__validate_url()
-        self.__results = self.__get_results(get_floorplans=get_floorplans)
+        self._status_code, self._first_page = self._request(url)
+        self._url = url
+        self._validate_url()
+        self._results = self._get_results(get_floorplans=get_floorplans)
 
     @staticmethod
     def _request(url: str):
@@ -43,16 +43,16 @@ class RightmoveData:
             url (str): optionally pass a new HTML link to a page of rightmove
                 search results (else defaults to the current `url` attribute).
             get_floorplans (bool): optionally scrape links to the individual
-                floor plan images for each listing (this drastically increases
+                flooplan images for each listing (this drastically increases
                 runtime so is False by default).
         """
         url = self.url if not url else url
-        self.__status_code, self.__first_page = self._request(url)
-        self.__url = url
-        self.__validate_url()
-        self.__results = self.__get_results(get_floorplans=get_floorplans)
+        self._status_code, self._first_page = self._request(url)
+        self._url = url
+        self._validate_url()
+        self._results = self._get_results(get_floorplans=get_floorplans)
 
-    def __validate_url(self):
+    def _validate_url(self):
         """Basic validation that the URL at least starts in the right format and
         returns status code 200."""
         real_url = "{}://www.rightmove.co.uk/{}/find.html?"
@@ -60,18 +60,18 @@ class RightmoveData:
         types = ["property-to-rent", "property-for-sale", "new-homes-for-sale"]
         urls = [real_url.format(p, t) for p in protocols for t in types]
         conditions = [self.url.startswith(u) for u in urls]
-        conditions.append(self.__status_code == 200)
+        conditions.append(self._status_code == 200)
         if not any(conditions):
             raise ValueError(f"Invalid rightmove search URL:\n\n\t{self.url}")
 
     @property
     def url(self):
-        return self.__url
+        return self._url
 
     @property
     def get_results(self):
         """Pandas DataFrame of all results returned by the search."""
-        return self.__results
+        return self._results
 
     @property
     def results_count(self):
@@ -88,14 +88,16 @@ class RightmoveData:
         total = self.get_results["price"].dropna().sum()
         return total / self.results_count
 
-    def summary(self, by: str = "number_bedrooms"):
-        """Pandas DataFrame summarising the the results by mean price and count.
-        By default grouped by the `number_bedrooms` column but will accept any
-        column name from `get_results` as a grouper.
+    def summary(self, by: str = None):
+        """DataFrame summarising results by mean price and count. Defaults to
+        grouping by `number_bedrooms` (residential) or `type` (commercial), but
+        accepts any column name from `get_results` as a grouper.
 
         Args:
             by (str): valid column name from `get_results` DataFrame attribute.
         """
+        if not by:
+            by = "type" if "commercial" in self.rent_or_sale else "number_bedrooms"
         assert by in self.get_results.columns, f"Column not found in `get_results`: {by}"
         df = self.get_results.dropna(axis=0, subset=["price"])
         groupers = {"price": ["count", "mean"]}
@@ -112,11 +114,15 @@ class RightmoveData:
     @property
     def rent_or_sale(self):
         """String specifying if the search is for properties for rent or sale.
-        Required because the Xpaths are different for the target elements."""
+        Required because Xpaths are different for the target elements."""
         if "/property-for-sale/" in self.url or "/new-homes-for-sale/" in self.url:
             return "sale"
         elif "/property-to-rent/" in self.url:
             return "rent"
+        elif "/commercial-property-for-sale/" in self.url:
+            return "sale-commercial"
+        elif "/commercial-property-to-let/" in self.url:
+            return "rent-commercial"
         else:
             raise ValueError(f"Invalid rightmove URL:\n\n\t{self.url}")
 
@@ -125,7 +131,7 @@ class RightmoveData:
         """Returns an integer of the total number of listings as displayed on
         the first page of results. Note that not all listings are available to
         scrape because rightmove limits the number of accessible pages."""
-        tree = html.fromstring(self.__first_page)
+        tree = html.fromstring(self._first_page)
         xpath = """//span[@class="searchHeader-resultCount"]/text()"""
         return int(tree.xpath(xpath)[0].replace(",", ""))
 
@@ -142,7 +148,7 @@ class RightmoveData:
             page_count = 42
         return page_count
 
-    def __get_page(self, request_content, get_floorplans=False):
+    def _get_page(self, request_content: str, get_floorplans: bool = False):
         """Method to scrape data from a single page of search results. Used
         iteratively by the `get_results` method to scrape data from every page
         returned by the search."""
@@ -150,9 +156,9 @@ class RightmoveData:
         tree = html.fromstring(request_content)
 
         # Set xpath for price:
-        if self.rent_or_sale == "rent":
+        if "rent" in self.rent_or_sale:
             xp_prices = """//span[@class="propertyCard-priceValue"]/text()"""
-        elif self.rent_or_sale == "sale":
+        elif "sale" in self.rent_or_sale:
             xp_prices = """//div[@class="propertyCard-priceValue"]/text()"""
         else:
             raise ValueError("Invalid URL format.")
@@ -204,9 +210,9 @@ class RightmoveData:
 
         return temp_df
 
-    def __get_results(self, get_floorplans=False):
+    def _get_results(self, get_floorplans: bool = False):
         """Build a Pandas DataFrame with all results returned by the search."""
-        results = self.__get_page(self.__first_page, get_floorplans=get_floorplans)
+        results = self._get_page(self._first_page, get_floorplans=get_floorplans)
 
         # Iterate through all pages scraping results:
         for p in range(1, self.page_count + 1, 1):
@@ -222,7 +228,7 @@ class RightmoveData:
                 break
 
             # Create a temporary DataFrame of page results:
-            temp_df = self.__get_page(content, get_floorplans=get_floorplans)
+            temp_df = self._get_page(content, get_floorplans=get_floorplans)
 
             # Concatenate the temporary DataFrame with the full DataFrame:
             frames = [results, temp_df]
