@@ -8,7 +8,7 @@
 
 ## Installation
 
-Version 1.0 is now available to install via Pip:
+Version 1.0.2 is now available to install via Pip:
 
  <code>pip install -U rightmove-webscraper</code>
 
