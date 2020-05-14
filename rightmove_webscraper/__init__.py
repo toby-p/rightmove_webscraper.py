@@ -242,7 +242,7 @@ class RightmoveData:
         results["price"] = pd.to_numeric(results["price"])
 
         # Extract postcodes to a separate column:
-        pat = r"\b([A-Za-z][A-Za-z]?[0-9][0-9]?[A-Za-z]?)\b"
+        pat = r"([A-Za-z][A-Za-z]?[0-9][0-9]?[A-Za-z]?[0-9]?\s[0-9]?[A-Za-z][A-Za-z])"
         results["postcode"] = results["address"].astype(str).str.extract(pat, expand=True)
 
         # Extract number of bedrooms from `type` to a separate column:
