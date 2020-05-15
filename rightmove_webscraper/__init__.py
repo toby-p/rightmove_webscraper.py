@@ -259,3 +259,133 @@ class RightmoveData:
         results["search_date"] = now
 
         return results
+
+
+class SoldProperties:
+
+    def __init__(self, url: str, get_floorplans: bool = False):
+        """Initialize the scraper with a URL from the results of a property
+        search performed on www.rightmove.co.uk.
+
+        Args:
+            url (str): full HTML link to a page of rightmove search results.
+            get_floorplans (bool): optionally scrape links to the individual
+                floor plan images for each listing (be warned this drastically
+                increases runtime so is False by default).
+        """
+        self._status_code, self._first_page = self._request(url)
+        self._url = url
+        self._validate_url()
+        self._results = self._get_results()
+
+    @staticmethod
+    def _request(url: str):
+        r = requests.get(url)
+        return r.status_code, r.content
+
+    def refresh_data(self, url: str = None, get_floorplans: bool = False):
+        """Make a fresh GET request for the rightmove data.
+
+        Args:
+            url (str): optionally pass a new HTML link to a page of rightmove
+                search results (else defaults to the current `url` attribute).
+            get_floorplans (bool): optionally scrape links to the individual
+                flooplan images for each listing (this drastically increases
+                runtime so is False by default).
+        """
+        url = self.url if not url else url
+        self._status_code, self._first_page = self._request(url)
+        self._url = url
+        self._validate_url()
+        self._results = self._get_results()
+
+    def _validate_url(self):
+        """Basic validation that the URL at least starts in the right format and
+        returns status code 200."""
+        real_url = "{}://www.rightmove.co.uk/{}/find.html?"
+        protocols = ["http", "https"]
+        types = ["property-to-rent", "property-for-sale", "new-homes-for-sale"]
+        urls = [real_url.format(p, t) for p in protocols for t in types]
+        conditions = [self.url.startswith(u) for u in urls]
+        conditions.append(self._status_code == 200)
+        if not any(conditions):
+            raise ValueError(f"Invalid rightmove search URL:\n\n\t{self.url}")
+
+    @property
+    def url(self):
+        return self._url
+
+    @property
+    def table(self):
+        return self._results
+
+    def _parse_page_data_of_interest(self, request_content: str):
+        """Method to scrape data from a single page of search results. Used
+        iteratively by the `get_results` method to scrape data from every page
+        returned by the search."""
+        soup = BeautifulSoup(request_content, features='lxml')
+
+        start = 'window.__PRELOADED_STATE__ = '
+        tags = soup.find_all(
+            lambda tag: tag.name == 'script' and start in tag.get_text())
+        if not tags:
+            raise ValueError('Could not extract data from current page!')
+        if len(tags) > 1:
+            raise ValueError('Inconsistent data in current page!')
+
+        json_str = tags[0].get_text()[len(start):]
+        json_obj = json.loads(json_str)
+
+        return json_obj
+
+    def _get_properties_list(self, json_obj):
+        return json_obj['results']['properties']
+
+    def _get_results(self):
+        """Build a Pandas DataFrame with all results returned by the search."""
+        print('Scraping page {}'.format(1))
+        print('- Parsing data from page {}'.format(1))
+        try:
+            page_data = self._parse_page_data_of_interest(self._first_page)
+            properties = self._get_properties_list(page_data)
+        except ValueError:
+            print('Failed to get property data from page {}'.format(1))
+
+        final_results = properties
+
+        current = page_data['pagination']['current']
+        last = page_data['pagination']['last']
+        if current == last:
+            return
+
+        # Scrape each page
+        for page in range(current + 1, last):
+            print('Scraping page {}'.format(page))
+
+            # Create the URL of the specific results page:
+            p_url = f"{str(self.url)}&page={page}"
+
+            # Make the request:
+            print('- Downloading data from page {}'.format(page))
+            status_code, page_content = self._request(p_url)
+
+            # Requests to scrape lots of pages eventually get status 400, so:
+            if status_code != 200:
+                print('Failed to access page {}'.format(page))
+                continue
+
+            # Create a temporary DataFrame of page results:
+            print('- Parsing data from page {}'.format(page))
+            try:
+                page_data = self._parse_page_data_of_interest(page_content)
+                properties = self._get_properties_list(page_data)
+            except ValueError:
+                print('Failed to get property data from page {}'.format(page))
+
+            # Append the list or properties.
+            final_results += properties
+
+        # Transform the final results into a table.
+        property_data_frame = pd.DataFrame.from_records(final_results)
+
+        return property_data_frame
