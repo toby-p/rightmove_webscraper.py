@@ -462,7 +462,7 @@ class SoldProperties:
         #return property_data_frame
 
     @property
-    def process_data(sel):
+    def process_data(self):
         df = self._results
     
         address = df['address'].str.extract(address_pattern, expand=True).to_numpy()
