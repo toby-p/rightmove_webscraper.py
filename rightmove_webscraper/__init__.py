@@ -447,7 +447,7 @@ class SoldProperties:
                     .assign(postcode=address[:, 1])
                     .assign(outwardcode=outwardcodes[:, 0])
                     .assign(transactions=df.transactions.apply(ast.literal_eval))
-                    .assign(location=df.location.apply(ast.literal_eval))
+                    #.assign(location=df.location.apply(ast.literal_eval))
                     .assign(last_price=lambda x: extract_price(x.transactions))
                     .assign(sale_date=lambda x: extract_date(x.transactions))
                     .assign(tenure=lambda x: extract_tenure(x.transactions))
@@ -457,6 +457,29 @@ class SoldProperties:
             )
             return df
      
-        #return process_data(property_data_frame)
+        return process_data(property_data_frame)
 
-        return property_data_frame
+        #return property_data_frame
+
+    @property
+    def process_data(sel):
+        df = self._results
+    
+        address = df['address'].str.extract(address_pattern, expand=True).to_numpy()
+        outwardcodes = df['address'].str.extract(outwardcode_pattern, expand=True).to_numpy()
+        
+        df = (df.drop(['address', 'images', 'hasFloorPlan', 'detailUrl'], axis=1)
+                .assign(address=address[:, 0])
+                .assign(postcode=address[:, 1])
+                .assign(outwardcode=outwardcodes[:, 0])
+                .assign(transactions=df.transactions.apply(ast.literal_eval))
+                .assign(location=df.location.apply(ast.literal_eval))
+                .assign(last_price=lambda x: extract_price(x.transactions))
+                .assign(sale_date=lambda x: extract_date(x.transactions))
+                .assign(tenure=lambda x: extract_tenure(x.transactions))
+                .assign(lat=lambda x: extract_coords(x.location, lat=True))
+                .assign(lng=lambda x: extract_coords(x.location))
+                .drop(['transactions', 'location'], axis=1)
+        )
+        return df
+     
