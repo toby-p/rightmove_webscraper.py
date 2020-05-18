@@ -462,8 +462,8 @@ class SoldProperties:
         #return property_data_frame
 
     @property
-    def process_data(self):
-        df = self._results
+    def processed_data(self):
+        df = self._get_results
     
         address = df['address'].str.extract(address_pattern, expand=True).to_numpy()
         outwardcodes = df['address'].str.extract(outwardcode_pattern, expand=True).to_numpy()
@@ -472,8 +472,8 @@ class SoldProperties:
                 .assign(address=address[:, 0])
                 .assign(postcode=address[:, 1])
                 .assign(outwardcode=outwardcodes[:, 0])
-                .assign(transactions=df.transactions.apply(ast.literal_eval))
-                .assign(location=df.location.apply(ast.literal_eval))
+                #.assign(transactions=df.transactions.apply(ast.literal_eval))
+                #.assign(location=df.location.apply(ast.literal_eval))
                 .assign(last_price=lambda x: extract_price(x.transactions))
                 .assign(sale_date=lambda x: extract_date(x.transactions))
                 .assign(tenure=lambda x: extract_tenure(x.transactions))
