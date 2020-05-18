@@ -433,12 +433,17 @@ class SoldProperties:
         property_data_frame = pd.DataFrame.from_records(final_results)
 
         # Breakdown the address in postcode, outwardcode and street/city
-        postcodes = property_data_frame['address'].str.extract(postcode_pattern, expand=True).to_numpy()
-        address = property_data_frame['address'].str.extract(address_pattern, expand=True).to_numpy()
-        outwardcodes = property_data_frame['address'].str.extract(outwardcode_pattern, expand=True).to_numpy()
+        #postcodes = property_data_frame['address'].str.extract(postcode_pattern, expand=True).to_numpy()
+        #address = property_data_frame['address'].str.extract(address_pattern, expand=True).to_numpy()
+        #outwardcodes = property_data_frame['address'].str.extract(outwardcode_pattern, expand=True).to_numpy()
 
         def process_data(rawdf):
             df = rawdf.copy()
+
+            postcodes = df['address'].str.extract(postcode_pattern, expand=True).to_numpy()
+            address = df['address'].str.extract(address_pattern, expand=True).to_numpy()
+            outwardcodes = df['address'].str.extract(outwardcode_pattern, expand=True).to_numpy()
+            
             df = (df.drop(['address', 'images', 'hasFloorPlan', 'detailUrl'], axis=1)
                     .assign(address=address[:, 0])
                     .assign(postcode=postcodes[:, 1])
