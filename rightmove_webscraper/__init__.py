@@ -457,4 +457,6 @@ class SoldProperties:
             )
             return df
      
-        return process_data(property_data_frame)
+        #return process_data(property_data_frame)
+
+        return property_data_frame
