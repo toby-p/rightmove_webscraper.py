@@ -321,7 +321,6 @@ class SoldProperties:
         self._url = url
         self._validate_url()
         self._results = self._get_results()
-        self.df = self.process_data()
 
     @staticmethod
     def _request(url: str):
@@ -363,10 +362,6 @@ class SoldProperties:
     @property
     def table(self):
         return self._results
-
-    @property
-    def df(self):
-        return self.
 
     def _parse_page_data_of_interest(self, request_content: str):
         """Method to scrape data from a single page of search results. Used
