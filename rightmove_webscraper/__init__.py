@@ -457,13 +457,13 @@ class SoldProperties:
             )
             return df
      
-        return process_data(property_data_frame)
+        #return process_data(property_data_frame)
 
-        #return property_data_frame
+        return property_data_frame
 
     @property
     def processed_data(self):
-        df = self._get_results
+        df = self._get_results()
     
         address = df['address'].str.extract(address_pattern, expand=True).to_numpy()
         outwardcodes = df['address'].str.extract(outwardcode_pattern, expand=True).to_numpy()
@@ -480,6 +480,17 @@ class SoldProperties:
                 .assign(lat=lambda x: extract_coords(x.location, lat=True))
                 .assign(lng=lambda x: extract_coords(x.location))
                 .drop(['transactions', 'location'], axis=1)
+                .reindex(columns=['last_price', 
+                                'sale_date', 
+                                'propertyType',
+                                'bedrooms',
+                                'bathrooms', 
+                                'tenure', 
+                                'address', 
+                                'postcode', 
+                                'outwardcode', 
+                                'lat', 
+                                'lng'])
         )
         return df
      
