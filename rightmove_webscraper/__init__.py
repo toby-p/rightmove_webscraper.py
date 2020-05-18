@@ -458,7 +458,7 @@ class SoldProperties:
 
     @property
     def processed_data(self):
-        df = self.table
+        df = self._results
     
         address = df['address'].str.extract(address_pattern, expand=True).to_numpy()
         outwardcodes = df['address'].str.extract(outwardcode_pattern, expand=True).to_numpy()
