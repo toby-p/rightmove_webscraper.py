@@ -364,6 +364,10 @@ class SoldProperties:
     def table(self):
         return self._results
 
+    @property
+    def df(self):
+        return self.
+
     def _parse_page_data_of_interest(self, request_content: str):
         """Method to scrape data from a single page of search results. Used
         iteratively by the `get_results` method to scrape data from every page
@@ -438,12 +442,8 @@ class SoldProperties:
         address = property_data_frame['address'].str.extract(address_pattern, expand=True).to_numpy()
         outwardcodes = property_data_frame['address'].str.extract(outwardcode_pattern, expand=True).to_numpy()
 
-        # Rather than touching the scraping pipeline,
-        # implement an extra processing step to clean the data
-        # within the class itself
-
-        def process_data(self):
-            df = self._results
+        def process_data(rawdf):
+            df = rawdf.copy()
             df = (df.drop(['address', 'images', 'hasFloorPlan', 'detailUrl'], axis=1)
                     .assign(address=address[:, 0])
                     .assign(postcode=postcodes[:, 1])
@@ -458,5 +458,5 @@ class SoldProperties:
                     .drop(['transactions', 'location'], axis=1)
             )
             return df
-
-        return property_data_frame
+     
+        return process_data(property_data_frame)
