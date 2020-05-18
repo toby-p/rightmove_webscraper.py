@@ -431,11 +431,6 @@ class SoldProperties:
         # Transform the final results into a table.
         property_data_frame = pd.DataFrame.from_records(final_results)
 
-        # Breakdown the address in postcode, outwardcode and street/city
-        #postcodes = property_data_frame['address'].str.extract(postcode_pattern, expand=True).to_numpy()
-        #address = property_data_frame['address'].str.extract(address_pattern, expand=True).to_numpy()
-        #outwardcodes = property_data_frame['address'].str.extract(outwardcode_pattern, expand=True).to_numpy()
-
         def process_data(rawdf):
             df = rawdf.copy()
         
@@ -463,7 +458,7 @@ class SoldProperties:
 
     @property
     def processed_data(self):
-        df = self._get_results()
+        df = self.table
     
         address = df['address'].str.extract(address_pattern, expand=True).to_numpy()
         outwardcodes = df['address'].str.extract(outwardcode_pattern, expand=True).to_numpy()
