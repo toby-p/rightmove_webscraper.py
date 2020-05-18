@@ -1,5 +1,8 @@
 
+import ast
+import re
 import datetime as dt
+from datetime import datetime
 from lxml import html
 import numpy as np
 import pandas as pd
@@ -8,6 +11,45 @@ from bs4 import BeautifulSoup
 import json
 
 
+# Env
+postcode_pattern = r'([A-Za-z][A-Za-z]?[0-9][0-9]?[A-Za-z]?[0-9]?\s[0-9]?[A-Za-z][A-Za-z])'
+address_pattern = r'([\s\S]+?)([A-Za-z][A-Za-z]?[0-9][0-9]?[A-Za-z]?[0-9]?\s[0-9]?[A-Za-z][A-Za-z])'
+outwardcode_pattern = r'([A-Za-z][A-Za-z]?[0-9][0-9]?[A-Za-z]?[0-9]?)'
+
+# Helpers
+def extract_price(series):
+    prices = []
+    for entry in series:
+        prices.append(int(entry[0]['displayPrice'].strip('£').replace(',', '')))
+    return prices
+
+
+def extract_date(series):
+    dates = []
+    for entry in series:
+        dates.append(datetime.strptime(entry[0]['dateSold'], '%d %b %Y'))
+    return dates
+
+
+def extract_tenure(series):
+    tenures = []
+    for entry in series:
+        tenures.append(entry[0]['tenure'])
+    return tenures
+
+
+def extract_coords(series, lat=False):
+    coords = []
+    if lat:
+        for entry in series:
+            coords.append(entry['lat'])
+    else:
+        for entry in series:
+            coords.append(entry['lng'])
+    return coords
+
+
+# Classes
 class RightmoveData:
     """The `RightmoveData` webscraper collects structured data on properties
     returned by a search performed on www.rightmove.co.uk
@@ -389,5 +431,31 @@ class SoldProperties:
 
         # Transform the final results into a table.
         property_data_frame = pd.DataFrame.from_records(final_results)
+
+        # Breakdown the address in postcode, outwardcode and street/city
+        postcodes = property_data_frame['address'].str.extract(postcode_pattern, expand=True).to_numpy()
+        address = property_data_frame['address'].str.extract(address_pattern, expand=True).to_numpy()
+        outwardcodes = property_data_frame['address'].str.extract(outwardcode_pattern, expand=True).to_numpy()
+
+        # Rather than touching the scraping pipeline,
+        # implement an extra processing step to clean the data
+        # within the class itself
+
+        def process_data(self):
+            df = (pd.DataFrame.from_records(final_results))
+            df = (df.drop(['address', 'images', 'hasFloorPlan', 'detailUrl'], axis=1)
+                    .assign(address=address[:, 0])
+                    .assign(postcode=postcodes[:, 1])
+                    .assign(outwardcode=outwardcodes[:, 0])
+                    .assign(transactions=df.transactions.apply(ast.literal_eval))
+                    .assign(location=df.location.apply(ast.literal_eval))
+                    .assign(last_price=lambda x: extract_price(x.transactions))
+                    .assign(sale_date=lambda x: extract_date(x.transactions))
+                    .assign(tenure=lambda x: extract_tenure(x.transactions))
+                    .assign(lat=lambda x: extract_coords(x.location, lat=True))
+                    .assign(lng=lambda x: extract_coords(x.location))
+                    .drop(['transactions', 'location'], axis=1)
+            )
+            return df
 
         return property_data_frame
