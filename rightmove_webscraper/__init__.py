@@ -12,7 +12,6 @@ import json
 
 
 # Env
-postcode_pattern = r'([A-Za-z][A-Za-z]?[0-9][0-9]?[A-Za-z]?[0-9]?\s[0-9]?[A-Za-z][A-Za-z])'
 address_pattern = r'([\s\S]+?)([A-Za-z][A-Za-z]?[0-9][0-9]?[A-Za-z]?[0-9]?\s[0-9]?[A-Za-z][A-Za-z])'
 outwardcode_pattern = r'([A-Za-z][A-Za-z]?[0-9][0-9]?[A-Za-z]?[0-9]?)'
 
@@ -439,14 +438,13 @@ class SoldProperties:
 
         def process_data(rawdf):
             df = rawdf.copy()
-
-            postcodes = df['address'].str.extract(postcode_pattern, expand=True).to_numpy()
+        
             address = df['address'].str.extract(address_pattern, expand=True).to_numpy()
             outwardcodes = df['address'].str.extract(outwardcode_pattern, expand=True).to_numpy()
             
             df = (df.drop(['address', 'images', 'hasFloorPlan', 'detailUrl'], axis=1)
                     .assign(address=address[:, 0])
-                    .assign(postcode=postcodes[:, 1])
+                    .assign(postcode=address[:, 1])
                     .assign(outwardcode=outwardcodes[:, 0])
                     .assign(transactions=df.transactions.apply(ast.literal_eval))
                     .assign(location=df.location.apply(ast.literal_eval))
