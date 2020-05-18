@@ -321,6 +321,7 @@ class SoldProperties:
         self._url = url
         self._validate_url()
         self._results = self._get_results()
+        self.df = self.process_data()
 
     @staticmethod
     def _request(url: str):
@@ -442,7 +443,7 @@ class SoldProperties:
         # within the class itself
 
         def process_data(self):
-            df = (pd.DataFrame.from_records(final_results))
+            df = self._results
             df = (df.drop(['address', 'images', 'hasFloorPlan', 'detailUrl'], axis=1)
                     .assign(address=address[:, 0])
                     .assign(postcode=postcodes[:, 1])
