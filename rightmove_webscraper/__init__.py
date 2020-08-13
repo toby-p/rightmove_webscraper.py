@@ -663,7 +663,7 @@ class RightmoveSoldData:
             xp_prices = """//span[@class="propertyCard-priceValue"]/text()"""
         elif "sale" in self.rent_or_sale:
             xp_prices = """//div[@class="propertyCard-priceValue"]/text()"""
-        elif: "previously_sold" in self.rent_or_sale:
+        elif "previously_sold" in self.rent_or_sale:
             xp_prices = """//td[@class="price"]/text()"""
         else:
             raise ValueError("Invalid URL format.")
