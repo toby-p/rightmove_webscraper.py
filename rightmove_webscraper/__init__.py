@@ -488,7 +488,6 @@ class SoldProperties:
                                 'lng'])
         )
         return df
-<<<<<<< HEAD
 
 
 class RightmoveSoldData:
@@ -770,6 +769,3 @@ class RightmoveSoldData:
         results["search_date"] = now
 
         return results
-=======
-     
->>>>>>> 26f746c0c3f0fd3ee15287707e9783b3e9dddfaf
