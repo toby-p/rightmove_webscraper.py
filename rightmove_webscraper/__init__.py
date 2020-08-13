@@ -547,7 +547,7 @@ class RightmoveSoldData:
         This is specific for sold properties.
         """
         real_url = "{}://www.rightmove.co.uk/{}/"
-        breakpoint()
+        #breakpoint()
         protocols = ["http", "https"]
         types = ["house-prices"]
         urls = [real_url.format(p, t) for p in protocols for t in types]
@@ -688,7 +688,7 @@ class RightmoveSoldData:
         addresses = tree.xpath(xp_addresses)
         base = "http://www.rightmove.co.uk"
         weblinks = [f"{base}{tree.xpath(xp_weblinks)[w]}" for w in range(len(tree.xpath(xp_weblinks)))]
-        breakpoint() # Check p weblinks
+        #breakpoint() # Check p weblinks
         #agent_urls = [f"{base}{tree.xpath(xp_agent_urls)[a]}" for a in range(len(tree.xpath(xp_agent_urls)))]
 
         # Optionally get floorplan links from property urls (longer runtime):
