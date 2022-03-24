@@ -18,7 +18,7 @@ with open(os.path.join(DIR, "dev-requirements.txt"), "r") as f:
 setup(
     name="rightmove_webscraper",
     packages=["rightmove_webscraper"],
-    version="1.1.1",
+    version="1.1.2",
     description="A class for scraping data from rightmove.co.uk",
     long_description=long_description,
     author="Toby Petty",
