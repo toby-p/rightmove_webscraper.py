@@ -1,7 +1,5 @@
 # rightmove-webscraper
 
-[![Downloads](https://pepy.tech/badge/rightmove-webscraper)](https://pepy.tech/project/rightmove-webscraper)
-
 <a href="http://www.rightmove.co.uk/" target="_blank">rightmove.co.uk</a> is one of the UK's largest property listings websites, hosting thousands of listings of properties for sale and to rent.
 
 <code>rightmove_webscraper.py</code> is a simple Python interface to scrape property listings from the website and prepare them in a Pandas dataframe for analysis.
@@ -22,12 +20,10 @@ Version 1.1 is available to install via Pip:
 
 3) Create an instance of the class with the URL as the init argument.
 
-```python
-from rightmove_webscraper import RightmoveData
+` pythonfrom rightmove_webscraper import RightmoveData
 
 url = "https://www.rightmove.co.uk/property-for-sale/find.html?searchType=SALE&locationIdentifier=REGION%5E94346"
-rm = RightmoveData(url)
-```
+rm = RightmoveData(url) `
 
 ## What will be scraped?
 
@@ -44,39 +40,39 @@ The following instance methods and properties are available to access the scrape
 
 **Full results as a Pandas.DataFrame**
 
-```python
+` python
 rm.get_results.head()
-```
+`
 
 **Average price of all listings scraped**
 
-```python
+` python
 rm.average_price
-```
+`
 
-> `1650065.841025641`
+> ` 1650065.841025641 `
 
 **Total number of listings scraped**
 
-```python
+` python
 rm.results_count
-```
+`
 
-> `195`
+> ` 195 `
 
 **Summary statistics**
 
 By default shows the number of listings and average price grouped by the number of bedrooms:
 
-```python
+` python
 rm.summary()
-```
+`
 
 Alternatively group the results by any other column from the <code>.get_results</code> DataFrame, for example by postcode:
 
-```python
+` python
 rm.summary(by="postcode")
-```
+`
 
 ## Legal
 
