@@ -172,6 +172,7 @@ class RightmoveData:
         xp_agent_urls = """//div[@class="propertyCard-contactsItem"]\
         //div[@class="propertyCard-branchLogo"]\
         //a[@class="propertyCard-branchLogo-link"]/@href"""
+        xp_image_urls = """//div[@class="propertyCard-img "]//img/@src"""
 
         # Create data lists from xpaths:
         price_pcm = tree.xpath(xp_prices)
@@ -180,6 +181,7 @@ class RightmoveData:
         base = "http://www.rightmove.co.uk"
         weblinks = [f"{base}{tree.xpath(xp_weblinks)[w]}" for w in range(len(tree.xpath(xp_weblinks)))]
         agent_urls = [f"{base}{tree.xpath(xp_agent_urls)[a]}" for a in range(len(tree.xpath(xp_agent_urls)))]
+        image_urls = tree.xpath(xp_image_urls)
 
         # Optionally get floorplan links from property urls (longer runtime):
         floorplan_urls = list() if get_floorplans else np.nan
@@ -197,11 +199,11 @@ class RightmoveData:
                     floorplan_urls.append(np.nan)
 
         # Store the data in a Pandas DataFrame:
-        data = [price_pcm, titles, addresses, weblinks, agent_urls]
+        data = [price_pcm, titles, addresses, weblinks, agent_urls, image_urls]
         data = data + [floorplan_urls] if get_floorplans else data
         temp_df = pd.DataFrame(data)
         temp_df = temp_df.transpose()
-        columns = ["price", "type", "address", "url", "agent_url"]
+        columns = ["price", "type", "address", "url", "agent_url", "image_url"]
         columns = columns + ["floorplan_url"] if get_floorplans else columns
         temp_df.columns = columns
 
