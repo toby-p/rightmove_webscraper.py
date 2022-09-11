@@ -16,7 +16,7 @@ class RightmoveData:
 
     The query to rightmove can be renewed by calling the `refresh_data` method.
     """
-    def __init__(self, url: str, get_floorplans: bool = False):
+    def __init__(self, url: str, get_floorplans: bool = False, proxies: dict = None):
         """Initialize the scraper with a URL from the results of a property
         search performed on www.rightmove.co.uk.
 
@@ -26,14 +26,15 @@ class RightmoveData:
                 floor plan images for each listing (be warned this drastically
                 increases runtime so is False by default).
         """
-        self._status_code, self._first_page = self._request(url)
+        self._proxies = proxies
+        self._status_code, self._first_page = self._request(url, proxies)
         self._url = url
         self._validate_url()
         self._results = self._get_results(get_floorplans=get_floorplans)
 
     @staticmethod
-    def _request(url: str):
-        r = requests.get(url)
+    def _request(url: str, proxies: dict = None):
+        r = requests.get(url, proxies=proxies)
         return r.status_code, r.content
 
     def refresh_data(self, url: str = None, get_floorplans: bool = False):
