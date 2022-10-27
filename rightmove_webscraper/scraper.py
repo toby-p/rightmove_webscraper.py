@@ -189,7 +189,7 @@ class RightmoveData:
                 if status_code != 200:
                     continue
                 tree = html.fromstring(content)
-                xp_floorplan_url = """//*[@id="floorplanTabs"]/div[2]/div[2]/img/@src"""
+                xp_floorplan_url = """//*[contains(@alt, 'Floorplan')]/@src"""
                 floorplan_url = tree.xpath(xp_floorplan_url)
                 if floorplan_url:
                     floorplan_urls.append(floorplan_url[0])
