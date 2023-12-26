@@ -3,7 +3,7 @@ import datetime
 from lxml import html
 import numpy as np
 import pandas as pd
-import requests
+from security import safe_requests
 
 
 class RightmoveData:
@@ -33,7 +33,7 @@ class RightmoveData:
 
     @staticmethod
     def _request(url: str):
-        r = requests.get(url)
+        r = safe_requests.get(url)
         return r.status_code, r.content
 
     def refresh_data(self, url: str = None, get_floorplans: bool = False):

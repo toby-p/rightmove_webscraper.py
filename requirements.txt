@@ -2,3 +2,4 @@ lxml>=4.8.0
 numpy>=1.22.3
 pandas>=1.4.1
 requests>=2.27.1
+security~=1.2.0
