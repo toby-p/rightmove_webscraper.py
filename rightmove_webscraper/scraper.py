@@ -59,9 +59,12 @@ class RightmoveData:
         protocols = ["http", "https"]
         types = ["property-to-rent", "property-for-sale", "new-homes-for-sale"]
         urls = [real_url.format(p, t) for p in protocols for t in types]
+
         conditions = [self.url.startswith(u) for u in urls]
-        conditions.append(self._status_code == 200)
-        if not any(conditions):
+
+        valid_url = any(conditions)
+        valid_status = self._status_code==200
+        if not (valid_url and valid_status):
             raise ValueError(f"Invalid rightmove search URL:\n\n\t{self.url}")
 
     @property
