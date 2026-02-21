@@ -242,7 +242,7 @@ class RightmoveData:
         results.reset_index(inplace=True, drop=True)
 
         # Convert price column to numeric type:
-        results["price"].replace(regex=True, inplace=True, to_replace=r"\D", value=r"")
+        results["price"] = results["price"].str.replace(r"\D", "", regex=True)
         results["price"] = pd.to_numeric(results["price"])
 
         # Extract short postcode area to a separate column:
@@ -256,8 +256,8 @@ class RightmoveData:
         # Extract number of bedrooms from `type` to a separate column:
         pat = r"\b([\d][\d]?)\b"
         results["number_bedrooms"] = results["type"].astype(str).str.extract(pat, expand=True)[0]
-        results.loc[results["type"].str.contains("studio", case=False), "number_bedrooms"] = 0
         results["number_bedrooms"] = pd.to_numeric(results["number_bedrooms"])
+        results.loc[results["type"].str.contains("studio", case=False), "number_bedrooms"] = 0
 
         # Clean up annoying white spaces and newlines in `type` column:
         results["type"] = results["type"].str.strip("\n").str.strip()
